@@ -16,10 +16,12 @@ FROM node:16.14-alpine
 
 WORKDIR /app-frontend
 
+COPY package*.json ./
+
 RUN npm install --quiet
 
 COPY . .
 
 EXPOSE 3001
 
-ENTRYPOINT ["nginx", "-g", "npm", "start"]
+CMD ["npm", "run" ,"dev"]
