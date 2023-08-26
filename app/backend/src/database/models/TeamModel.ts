@@ -6,14 +6,12 @@ import {
   CreationOptional,
 } from 'sequelize';
 import db from '.';
-import Matche from './MatchesModel';
 
 class Team extends Model<InferAttributes<Team>,
 InferCreationAttributes<Team>> {
   declare id: CreationOptional<number>;
 
   declare teamName: string;
-
 }
 
 Team.init({
@@ -24,16 +22,14 @@ Team.init({
     autoIncrement: true,
   },
   teamName: {
-    type: DataTypes.STRING(30),
+    type: DataTypes.STRING(),
     allowNull: false,
   },
 }, {
   sequelize: db,
   tableName: 'teams',
   timestamps: false,
+  underscored: true,
 });
-
-Team.hasMany(Matche, { foreignKey: 'homeTeamId' });
-Team.hasMany(Matche, { foreignKey: 'awayTeamId' });
 
 export default Team;

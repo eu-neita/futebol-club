@@ -29,6 +29,6 @@ export default {
     });
   },
   down(queryInterface: QueryInterface) {
-    return queryInterface.dropTable('teams');
+    return queryInterface.dropTable('users');
   },
 };
