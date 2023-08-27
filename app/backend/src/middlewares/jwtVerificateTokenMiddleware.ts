@@ -15,7 +15,7 @@ const jwtVerificated = (req: Request, res: Response, next: NextFunction) => {
   }
 
   req.params.email = decoded.email;
-  next();
+  return next();
 };
 
 export default jwtVerificated;
