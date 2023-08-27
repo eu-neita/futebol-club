@@ -57,14 +57,13 @@ describe('/teams:id', () => {
   });
 
   it('should return all teams with status 200', async () => {
-    const res = await chai.request(app).get('/teams/5');
+    const res = await chai.request(app).get('/teams/1');
     expect(res).to.have.status(200);
     // expect(res.body).to.be.an('array');
-    expect(res.body).to.have.length.greaterThan(0);
     expect(res.body).to.have.property('id');
-    expect(res.body.message.id).to.been.deep.equal('5');
+    expect(res.body.id).to.been.deep.equal(1);
     expect(res.body).to.have.property('teamName');
-    expect(res.body.message.teamName).to.been.deep.equal('Cruzeiro');
+    expect(res.body.teamName).to.been.deep.equal('Avaí/Kindermann');
   });
 
   after(()=>{
