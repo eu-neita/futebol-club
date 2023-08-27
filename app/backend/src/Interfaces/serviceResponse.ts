@@ -1,6 +1,6 @@
 export type ServiceMessage = { message: string };
 
-type ServiceResponseErrorType = 200;
+type ServiceResponseErrorType = 401;
 
 export type ServiceResponseError = {
   status: ServiceResponseErrorType,
