@@ -1,4 +1,4 @@
-// import validator from 'validator';
+import validator from 'validator';
 import { Request, Response, NextFunction } from 'express';
 
 const loginVerifications = (req: Request, res: Response, next: NextFunction) => {
@@ -6,7 +6,9 @@ const loginVerifications = (req: Request, res: Response, next: NextFunction) => 
   if (!email || !password) {
     return res.status(400).json({ message: 'All fields must be filled' });
   }
-  // !validator.isEmail(email);
+  if (!validator.isEmail(email) || !validator.isLength(password, { min: 6, max: 42 })) {
+    return res.status(401).json({ message: 'Invalid email or password' });
+  }
   next();
 };
 
