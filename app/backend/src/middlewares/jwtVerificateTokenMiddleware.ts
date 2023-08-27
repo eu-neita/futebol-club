@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-const jwtVerificated = (req: Request, res: Response, next: NextFunction) => {
+const jwtVerificated = async (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;
 
   if (!authorization) {
@@ -10,11 +10,11 @@ const jwtVerificated = (req: Request, res: Response, next: NextFunction) => {
 
   const decoded = jwt.decode(authorization) as jwt.JwtPayload | null;
 
-  if (decoded === null) {
+  if (!decoded?.email) {
     return res.status(401).json({ message: 'Token must be a valid token' });
   }
 
-  req.params.email = decoded.email;
+  req.params.email = decoded?.email;
   return next();
 };
 
