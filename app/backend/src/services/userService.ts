@@ -14,4 +14,9 @@ export default class UserService {
     }
     return { status: 200, data: token };
   }
+
+  public async userRole(email: string): Promise<ServiceResponse<string | object>> {
+    const role = await this.userModel.getRole(email);
+    return { status: 200, data: role };
+  }
 }

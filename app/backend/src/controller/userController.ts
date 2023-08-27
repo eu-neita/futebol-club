@@ -11,4 +11,10 @@ export default class TeamController {
     const serviceResponse = await this.userService.userLogin(email, password);
     res.status(serviceResponse.status).json(serviceResponse.data);
   }
+
+  public async getRole(req: Request, res: Response) {
+    const { email } = req.params;
+    const serviceResponse = await this.userService.userRole(email);
+    res.status(serviceResponse.status).json(serviceResponse.data);
+  }
 }

@@ -12,6 +12,7 @@ InferCreationAttributes<User>> {
   declare id: CreationOptional<number>;
 
   declare username: string;
+  declare role: string;
   declare email: string;
   declare password: string;
 }
@@ -24,6 +25,10 @@ User.init({
     autoIncrement: true,
   },
   username: {
+    type: DataTypes.STRING(),
+    allowNull: false,
+  },
+  role: {
     type: DataTypes.STRING(),
     allowNull: false,
   },

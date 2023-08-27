@@ -27,4 +27,9 @@ export default class UserModel {
 
     return { token: tokenString };
   }
+
+  async getRole(email: string): Promise<string | object> {
+    const user = await this.model.findOne({ where: { email } });
+    return { role: user?.role };
+  }
 }

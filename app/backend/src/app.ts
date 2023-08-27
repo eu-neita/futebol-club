@@ -12,11 +12,6 @@ class App {
     this.routes();
   }
 
-  private routes() {
-    this.app.use(teamsRoutes);
-    this.app.use(userRoutes);
-  }
-
   private config():void {
     const accessControl: express.RequestHandler = (_req, res, next) => {
       res.header('Access-Control-Allow-Origin', '*');
@@ -27,6 +22,12 @@ class App {
 
     this.app.use(express.json());
     this.app.use(accessControl);
+    // this.app.use(accessControl teamsRoutes);
+  }
+
+  private routes() {
+    this.app.use(teamsRoutes);
+    this.app.use(userRoutes);
   }
 
   public start(PORT: string | number): void {
