@@ -17,7 +17,8 @@ export default class MatcheService {
     return { teamName: tk?.teamName };
   }
 
-  public async getAllMatches(): Promise<ServiceResponse<IMatches[] | null | unknown>> {
+  public async getAllMatches(param: boolean | undefined):
+  Promise<ServiceResponse<IMatches[] | null | unknown>> {
     const allMatches = await this.matcheModel.findAll();
     const object = allMatches?.map(async (match): Promise<IMatches> => {
       const homeTeam = await this.getByIdTeam(match.homeTeamId);
@@ -28,6 +29,10 @@ export default class MatcheService {
         awayTeam,
       };
     });
-    return { status: 200, data: await Promise.all(object || []) };
+    const datas = await Promise.all(object || []);
+    if (param !== undefined) {
+      return { status: 200, data: datas.filter((par) => par.inProgress === param) };
+    }
+    return { status: 200, data: datas };
   }
 }
