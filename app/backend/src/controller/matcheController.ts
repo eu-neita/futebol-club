@@ -12,4 +12,11 @@ export default class MatcheController {
       .getAllMatches(inProgress?.toString());
     res.status(serviceResponse.status).json(serviceResponse.data);
   }
+
+  public async finishedMatches(req: Request, res: Response) {
+    const { id } = req.params;
+    const serviceResponse = await this.matcheService
+      .finishedMatch(parseFloat(id));
+    res.status(serviceResponse.status).json(serviceResponse.data);
+  }
 }

@@ -17,7 +17,11 @@ export default class MatchModel implements IMatcheModel {
         inProgress }
     ));
   }
-  // findById(id: number): Promise<IMatches | null> {
-  //   throw new Error('Method not implemented.');
-  // }
+
+  async updateById(id: number): Promise<undefined | string> {
+    const mache = await this.model.findByPk(id);
+    // if (mache?.inProgress === false) return 'id not found';
+    const finished = await mache?.update({ inProgress: false });
+    return finished !== null ? 'finished' : undefined;
+  }
 }

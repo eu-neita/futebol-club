@@ -1,7 +1,7 @@
 import * as jwt from 'jsonwebtoken';
 import { Request, Response, NextFunction } from 'express';
 
-const removeBarrer = (auth: string | undefined) => auth?.split(' ')[1] || '';
+export const removeBarrer = (auth: string | undefined) => auth?.split(' ')[1] || '';
 
 const jwtVerificated = (req: Request, res: Response, next: NextFunction) => {
   const { authorization } = req.headers;

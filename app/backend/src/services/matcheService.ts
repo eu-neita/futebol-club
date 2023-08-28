@@ -35,4 +35,10 @@ export default class MatcheService {
     }
     return { status: 200, data: datas };
   }
+
+  public async finishedMatch(param: number):Promise<ServiceResponse<object | null | undefined>> {
+    const updateMacthes = await this.matcheModel.updateById(param);
+    if (!updateMacthes) return { status: 400, data: { message: 'id not found' } };
+    return { status: 200, data: { message: updateMacthes } };
+  }
 }
