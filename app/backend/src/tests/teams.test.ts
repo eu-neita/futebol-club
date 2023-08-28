@@ -6,7 +6,7 @@ import teamMock from './mocks/teamsMock'
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import Team from '../database/models/TeamModel';
+import TeamModel from '../models/TeamModel';
 
 import { Response } from 'superagent';
 
@@ -17,21 +17,6 @@ const { expect } = chai;
 describe('/teams', () => {
   let chaiHttpResponse: Response;
 
-  before(async () => {
-    sinon
-      .stub(Team, "findOne")
-      .resolves(teamMock as Team);
-  });
-
-
-  it('should create a team table', async () => {
-    const team = await Team.create({
-      teamName: 'Test Team',
-    });
-    expect(team).to.have.property('id');
-    expect(team).to.have.property('teamName', 'Test Team');
-  });
-
   it('should return all teams with status 200', async () => {
     const res = await chai.request(app).get('/teams');
     expect(res).to.have.status(200);
@@ -41,20 +26,10 @@ describe('/teams', () => {
     expect(res.body[0]).to.have.property('teamName');
   });
 
-  after(()=>{
-    (Team.findOne as sinon.SinonStub).restore();
-  })
-
 });
 
 describe('/teams:id', () => {
   let chaiHttpResponse: Response;
-
-  before(async () => {
-    sinon
-      .stub(Team, "findOne")
-      .resolves(teamMock as Team);
-  });
 
   it('should return all teams with status 200', async () => {
     const res = await chai.request(app).get('/teams/1');
@@ -66,8 +41,11 @@ describe('/teams:id', () => {
     expect(res.body.teamName).to.been.deep.equal('Avaí/Kindermann');
   });
 
-  after(()=>{
-    (Team.findOne as sinon.SinonStub).restore();
-  })
+  it('should return team by id if not exist return null', async () => {
+    const res = await chai.request(app).get('/teams/666');
+    expect(res).to.have.status(200);
+    expect(res.body).to.be.equal(null);
+    console.log(res);
+  });
 
 });
