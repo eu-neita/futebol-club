@@ -12,6 +12,12 @@ matcheRoutes.get(
 );
 
 matcheRoutes.patch(
+  '/matches/:id',
+  jwtVerificated,
+  (req: Request, res: Response) => matcheController.updateMatchesResultsById(req, res),
+);
+
+matcheRoutes.patch(
   '/matches/:id/finish',
   jwtVerificated,
   (req: Request, res: Response) => matcheController.finishedMatches(req, res),
