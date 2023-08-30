@@ -1,5 +1,5 @@
 // import { NewEntity } from '../../Interfaces';
-import { IMatcheModel, ResultsType } from '../Interfaces/teams/IMatcheModel';
+import { IMatcheModel, MatcheCeateDataType, ResultsType } from '../Interfaces/teams/IMatcheModel';
 import { ServiceResponse } from '../Interfaces/serviceResponse';
 import MatcheModel from '../models/MatcheModel';
 import { IMatches } from '../Interfaces/migrations/IMatches';
@@ -51,5 +51,11 @@ export default class MatcheService {
     const updateResults = await this.matcheModel.updateMatchesById(id, results);
     if (!updateResults) return { status: 400, data: { message: 'id not found' } };
     return { status: 200, data: { message: updateResults } };
+  }
+
+  public async createMatches(results: MatcheCeateDataType):
+  Promise<ServiceResponse<string | IMatches>> {
+    const updateMacthes = await this.matcheModel.createMatchesBy(results);
+    return { status: 200, data: updateMacthes };
   }
 }

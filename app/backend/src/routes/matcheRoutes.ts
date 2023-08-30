@@ -11,6 +11,12 @@ matcheRoutes.get(
   (req: Request, res: Response) => matcheController.getAllMatches(req, res),
 );
 
+matcheRoutes.post(
+  '/matches',
+  jwtVerificated,
+  (req: Request, res: Response) => matcheController.createMatches(req, res),
+);
+
 matcheRoutes.patch(
   '/matches/:id',
   jwtVerificated,

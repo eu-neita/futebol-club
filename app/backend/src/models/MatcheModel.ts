@@ -1,7 +1,7 @@
 import { FindOptions } from 'sequelize';
 import Team from '../database/models/TeamModel';
 import { IMatches } from '../Interfaces/migrations/IMatches';
-import { IMatcheModel, ResultsType } from '../Interfaces/teams/IMatcheModel';
+import { IMatcheModel, MatcheCeateDataType, ResultsType } from '../Interfaces/teams/IMatcheModel';
 import Matche from '../database/models/MatcheModel';
 
 export default class MatchModel implements IMatcheModel {
@@ -35,7 +35,12 @@ export default class MatchModel implements IMatcheModel {
 
   async updateMatchesById(id: number, results: ResultsType): Promise<undefined | string> {
     const mache = await this.model.findByPk(id);
-    const finished = await mache?.update(results);
-    return finished !== null ? 'updated' : undefined;
+    const updated = await mache?.update(results);
+    return updated !== null ? 'updated' : undefined;
+  }
+
+  async createMatchesBy(results: MatcheCeateDataType): Promise<IMatches | string> {
+    const matche = await this.model.create({ ...results, inProgress: true });
+    return matche;
   }
 }
