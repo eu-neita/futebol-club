@@ -56,6 +56,6 @@ export default class MatcheService {
   public async createMatches(results: MatcheCeateDataType):
   Promise<ServiceResponse<string | IMatches>> {
     const updateMacthes = await this.matcheModel.createMatchesBy(results);
-    return { status: 200, data: updateMacthes };
+    return { status: 201, data: updateMacthes };
   }
 }
