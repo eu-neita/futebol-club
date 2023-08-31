@@ -26,7 +26,7 @@ describe('POST /login', () => {
       });
   });
 
-  it('should respond with an error when the email is missing', () => {
+  it('should respond with an error when the email is missing', (done) => {
     sinon.stub(UserModel.prototype, 'login').resolves({ message: 'All fields must be filled' });
     chai.request(app)
       .post('/login')
@@ -38,6 +38,7 @@ describe('POST /login', () => {
         expect(res.body).to.deep.equal({ message: 'All fields must be filled' });
       });
       sinon.restore();
+      done()
   });
 
   it('should respond with an error when invalid email or pass', () => {

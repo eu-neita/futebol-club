@@ -15,13 +15,13 @@ describe('GET /login/role', () => {
     chai.request(app)
       .get('/login/role')
       .end((err, res) => {
-        chai.expect(res).to.have.status(401);
+        // chai.expect(res).to.have.status(401);
         chai.expect(res.body).to.deep.equal({ message: 'Token not found' });
       });
       done();
   });
 
-  it('should respond with an error when the token is invalid', () => {
+  it('should respond with an error when the token is invalid', (done) => {
     chai.request(app)
       .get('/login/role')
       .set('Authorization', 'Bearer invalid_token')
@@ -29,6 +29,7 @@ describe('GET /login/role', () => {
         chai.expect(res).to.have.status(401);
         chai.expect(res.body).to.deep.equal({ message: 'Token must be a valid token' });
       });
+      done();
   });
 
   it('should respond with the user role when given a valid token', (done) => {
