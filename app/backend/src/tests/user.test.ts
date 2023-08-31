@@ -5,6 +5,7 @@ import 'mocha';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
+import UserModel from '../models/UserModel';
 
 
 chai.use(chaiHttp);
@@ -26,6 +27,7 @@ describe('POST /login', () => {
   });
 
   it('should respond with an error when the email is missing', () => {
+    sinon.stub(UserModel.prototype, 'login').resolves({ message: 'All fields must be filled' });
     chai.request(app)
       .post('/login')
       .send({
@@ -35,9 +37,11 @@ describe('POST /login', () => {
         expect(res).to.have.status(400);
         expect(res.body).to.deep.equal({ message: 'All fields must be filled' });
       });
+      sinon.restore();
   });
 
   it('should respond with an error when invalid email or pass', () => {
+    sinon.stub(UserModel.prototype, 'login').resolves({ message: 'Invalid email or password' });
     chai.request(app)
       .post('/login')
       .send({
@@ -48,6 +52,7 @@ describe('POST /login', () => {
         expect(res).to.have.status(401);
         expect(res.body).to.deep.equal({ message: 'Invalid email or password' });
       });
+      sinon.restore();
     });
 
   it('should respond with an error when the password is missing', () => {

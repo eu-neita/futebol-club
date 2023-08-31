@@ -5,10 +5,12 @@ import 'mocha';
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
+import UserModel from '../models/UserModel';
 
 chai.use(chaiHttp);
 
 describe('GET /login/role', () => {
+
   it('should respond with an error when the token is missing', (done) => {
     chai.request(app)
       .get('/login/role')
@@ -19,7 +21,7 @@ describe('GET /login/role', () => {
       done();
   });
 
-  it('should respond with an error when the token is invalid', (done) => {
+  it('should respond with an error when the token is invalid', () => {
     chai.request(app)
       .get('/login/role')
       .set('Authorization', 'Bearer invalid_token')
@@ -27,10 +29,10 @@ describe('GET /login/role', () => {
         chai.expect(res).to.have.status(401);
         chai.expect(res.body).to.deep.equal({ message: 'Token must be a valid token' });
       });
-      done();
   });
 
   it('should respond with the user role when given a valid token', (done) => {
+    sinon.stub(UserModel.prototype, 'getRole').resolves({role: 'admin'});
     chai.request(app)
       .post('/login')
       .send({
@@ -46,8 +48,11 @@ describe('GET /login/role', () => {
           .end((err, res) => {
             chai.expect(res).to.have.status(200);
             chai.expect(res.body).to.have.property('role');
-            done();
+
           });
       });
+      sinon.restore();
+      done();
   });
+
 });

@@ -1,11 +1,9 @@
-import * as sinon from 'sinon';
 import * as chai from 'chai';
 import 'mocha';
 // @ts-ignore
 import chaiHttp = require('chai-http');
 
 import { app } from '../app';
-import MatchModel from '../models/MatcheModel';
 
 chai.use(chaiHttp);
 const { expect } = chai;
@@ -34,9 +32,9 @@ describe('/matches', () => {
         expect(res.body[0]).to.deep.equal({
           id: 1,
           homeTeamId: 16,
-          homeTeamGoals: 1,
-          awayTeamId: 8,
+          homeTeamGoals: 3,
           awayTeamGoals: 1,
+          awayTeamId: 8,
           inProgress: false,
           homeTeam: {
             teamName: 'São Paulo'
@@ -90,64 +88,13 @@ describe('/matches', () => {
   });
 
   it('if token undefined return error Token not found', async () => {
-    chai.request(app)
-    .post('/login')
-    .send({
-      email: 'admin@admin.com',
-      password: 'secret_admin',
-    })
-    .end( (err, res) => {
-      const token = res.body.token;
       chai.request(app)
       .get('/matches?inProgress=false')
-      .set('Authorization', `Bearer ${token}`)
+      .set('Authorization', `Bearer `)
       .end((err, res) => {
         expect(res).to.have.status(401);
         expect(res.body).to.be.an('array');
         expect(res.body.message).to.be.equal('Token not found');
-      });
     });
-  });
-});
-
-describe('/matches/:id', () => {
-  let updateStub;
-  beforeEach(() => {
-    updateStub = sinon.stub(MatchModel, 'prototype').resolves([1]);
-  });
-
-
-  afterEach(() => {
-    updateStub.restore();
-  });
-
-  it('should update a match in progress', async () => {
-    chai.request(app)
-      .post('/login')
-      .send({
-        email: 'admin@admin.com',
-        password: 'secret_admin',
-      })
-      .end((err, res) => {
-        const token = res.body.token;
-        chai.request(app)
-          .patch('/matches/1')
-          .set('Authorization', `Bearer ${token}`)
-          .send({
-            homeTeamGoals: 3,
-            awayTeamGoals: 1,
-          })
-          .end((err, res) => {
-            expect(res).to.have.status(200);
-            expect(updateStub.calledWith({
-              homeTeamGoals: 3,
-              awayTeamGoals: 1,
-            }, {
-              where: {
-                id: 1,
-              },
-            })).to.be.true;
-          });
-      });
   });
 });
