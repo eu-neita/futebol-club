@@ -22,6 +22,7 @@ export default class UserModel {
       );
       return { token: tokenString };
     }
+    return 'User not found';
   }
 
   async getRole(email: string): Promise<string | object> {
