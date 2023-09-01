@@ -7,25 +7,21 @@ import User from '../database/models/UserModel';
 
 export default class UserModel {
   private model = User;
-  async login(email: string, pass: string): Promise<string | object> {
+  async login(email: string, pass: string): Promise<string | object | undefined> {
     const user = await this.model.findOne({ where: { email } });
 
-    if (!user) {
-      return 'User not found';
+    if (user) {
+      const isPasswordValid = await bcrypt.compare(pass, user.password);
+      if (!isPasswordValid) {
+        return 'Invalid password';
+      }
+      const tokenString = sign(
+        { id: user?.id, email: user?.email },
+        process.env.JWT_SECRET || 'batatinha',
+        { expiresIn: '3d' },
+      );
+      return { token: tokenString };
     }
-
-    const isPasswordValid = await bcrypt.compare(pass, user.password);
-
-    if (!isPasswordValid) {
-      return 'Invalid password';
-    }
-    const tokenString = sign(
-      { id: user.id, email: user.email },
-      process.env.JWT_SECRET || 'batatinha',
-      { expiresIn: '3d' },
-    );
-
-    return { token: tokenString };
   }
 
   async getRole(email: string): Promise<string | object> {

@@ -22,6 +22,7 @@ describe('/teams', () => {
         expect(res.body).to.have.length.greaterThan(0);
         expect(res.body[0]).to.have.property('id');
         expect(res.body[0]).to.have.property('teamName');
+        expect(res.body.length).to.deep.equal(16);
       });
       done();
     });

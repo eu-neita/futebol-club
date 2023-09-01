@@ -7,7 +7,8 @@ export default class UserService {
     private userModel: IUserModel = new UserModel(),
   ) { }
 
-  public async userLogin(email: string, pass: string): Promise<ServiceResponse<string | object>> {
+  public async userLogin(email: string, pass: string):
+  Promise<ServiceResponse<string | object | undefined>> {
     const token = await this.userModel.login(email, pass);
     if (token === 'User not found' || token === 'Invalid password') {
       return { status: 401, data: { message: 'Invalid email or password' } };

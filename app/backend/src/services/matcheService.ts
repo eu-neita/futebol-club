@@ -49,7 +49,7 @@ export default class MatcheService {
     results: ResultsType,
   ): Promise<ServiceResponse<object | null | undefined>> {
     const updateResults = await this.matcheModel.updateMatchesById(id, results);
-    if (!updateResults) return { status: 400, data: { message: 'id not found' } };
+    // if (!updateResults) return { status: 400, data: { message: 'id not found' } };
     return { status: 200, data: { message: updateResults } };
   }
 

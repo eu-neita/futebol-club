@@ -7,6 +7,9 @@ import UserModel from '../models/UserModel';
 
 chai.use(chaiHttp);
 
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJhZG1pbkBhZG1pbi5jb20iLCJpYXQiOjE2OTM1NDAxNTYsImV4cCI6MTY5Mzc5OTM1Nn0.pq5-mxpIGnL2iwCYph42DGYurUtaQW8QTOeLM8421NQ';
+
+
 const { expect } = chai;
 
 describe('User Authentication API', () => {
@@ -97,5 +100,23 @@ describe('User Authentication API', () => {
 
     expect(response.body.message).to.be.equal('All fields must be filled');
     expect(response.status).to.be.equal(400);
+  });
+
+  it('admin role test', async () => {
+    const response = await chai.request(app).get('/login/role').set('authorization', `Baerer ${token}`)
+    expect(response.body.role).to.be.equal("admin");
+    expect(response.status).to.be.equal(200);
+  });
+
+  it('admin role test invalid token', async () => {
+    const response = await chai.request(app).get('/login/role').set('authorization', `invalid`)
+    expect(response.body.message).to.be.equal("Token must be a valid token");
+    expect(response.status).to.be.equal(401);
+  });
+    
+  it('admin role test no token', async () => {
+    const response = await chai.request(app).get('/login/role')
+    expect(response.body.message).to.be.equal("Token not found");
+    expect(response.status).to.be.equal(401);
   });
 });
