@@ -1,71 +1,101 @@
 import * as sinon from 'sinon';
 import * as chai from 'chai';
-import 'mocha';
+import { app } from '../app';
 // @ts-ignore
 import chaiHttp = require('chai-http');
-
-import { app } from '../app';
 import UserModel from '../models/UserModel';
-
 
 chai.use(chaiHttp);
 
 const { expect } = chai;
 
-describe('POST /login', () => {
-  it('should respond with a token when given valid credentials', () => {
-    chai.request(app)
-      .post('/login')
-      .send({
-        email: 'admin@admin.com',
-        password: 'secret_admin',
-      })
-      .end((err, res) => {
-        expect(res).to.have.status(200);
-        expect(res.body).to.have.property('token');
-      });
+describe('User Authentication API', () => {
+  afterEach(() => {
+    sinon.restore();
   });
 
-  it('should respond with an error when the email is missing', (done) => {
-    sinon.stub(UserModel.prototype, 'login').resolves({ message: 'All fields must be filled' });
-    chai.request(app)
-      .post('/login')
-      .send({
-        password: 'secret_admin',
-      })
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body).to.deep.equal({ message: 'All fields must be filled' });
-      });
-      sinon.restore();
-      done()
+  it('should return a token with valid credentials', async () => {
+    const user = {
+      id: 1,
+      username: 'Admin',
+      role: 'admin',
+      email: 'admin@admin.com',
+    }
+    sinon.stub(UserModel.prototype, 'login').resolves(user as any);
+
+    const response = await chai.request(app).post('/login').send({
+      email: 'admin@admin.com',
+      password: 'secret_admin',
+    });
+    expect(response.status).to.be.equal(200);
   });
 
-  it('should respond with an error when invalid email or pass', () => {
-    sinon.stub(UserModel.prototype, 'login').resolves({ message: 'Invalid email or password' });
-    chai.request(app)
-      .post('/login')
-      .send({
-        email: 'admin@admin.com',
-        password: 'secret_admidasd',
-      })
-      .end((err, res) => {
-        expect(res).to.have.status(401);
-        expect(res.body).to.deep.equal({ message: 'Invalid email or password' });
-      });
-      sinon.restore();
+  it('should return status code 401 for non-existent user', async () => {
+    sinon.stub(UserModel.prototype, 'login').resolves({message: 'Invalid email or password'} as any);
+
+    const response = await chai.request(app).post('/login').send({
+      email: 'admin@adminfake.com',
+      password: 'secret_admin',
     });
 
-  it('should respond with an error when the password is missing', () => {
-    chai.request(app)
-      .post('/login')
-      .send({
-        email: 'admin@admin.com'
-      })
-      .end((err, res) => {
-        expect(res).to.have.status(400);
-        expect(res.body).to.deep.equal({ message: 'All fields must be filled' });
-      });
+    expect(response.body.message).to.be.equal('Invalid email or password');
   });
 
+  it('should return status code 401 for an invalid email', async () => {
+    const response = await chai.request(app).post('/login').send({
+      email: 'admin@admin',
+      password: 'secret_admin',
+    });
+
+    expect(response.body.message).to.be.equal('Invalid email or password');
+    expect(response.status).to.be.equal(401);
+  });
+
+  it('should return status code 401 for an invalid password', async () => {
+    const response = await chai.request(app).post('/login').send({
+      email: 'admin@admin.com',
+      password: 'secret',
+    });
+
+    expect(response.body.message).to.be.equal('Invalid email or password');
+    expect(response.status).to.be.equal(401);
+  });
+
+  it('should return status code 400 when email is missing', async () => {
+    const response = await chai.request(app).post('/login').send({
+      password: 'secret_admin',
+    });
+
+    expect(response.body.message).to.be.equal('All fields must be filled');
+    expect(response.status).to.be.equal(400);
+  });
+
+  it('should return status code 400 when password is missing', async () => {
+    const response = await chai.request(app).post('/login').send({
+      email: 'admin@admin.com',
+    });
+
+    expect(response.body.message).to.be.equal('All fields must be filled');
+    expect(response.status).to.be.equal(400);
+  });
+
+  it('should return status code 400 for an empty email field', async () => {
+    const response = await chai.request(app).post('/login').send({
+      email: '',
+      password: 'secret_admin',
+    });
+
+    expect(response.body.message).to.be.equal('All fields must be filled');
+    expect(response.status).to.be.equal(400);
+  });
+
+  it('should return status code 400 for an empty password field', async () => {
+    const response = await chai.request(app).post('/login').send({
+      email: 'admin@admin.com',
+      password: '',
+    });
+
+    expect(response.body.message).to.be.equal('All fields must be filled');
+    expect(response.status).to.be.equal(400);
+  });
 });

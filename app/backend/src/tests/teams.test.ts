@@ -25,4 +25,17 @@ describe('/teams', () => {
       });
       done();
     });
+
+      it('should return team by id with status 200', async () => {
+        const response = await chai.request(app).get('/teams/1');
+        expect(response.body).to.be.an('object');
+        expect(response.body).to.have.property('id');
+        expect(response.body).to.have.property('teamName');
+      });
+
+      it('should return null when team id is not found', async () => {
+        sinon.stub(TeamModel.prototype, 'findById').resolves(null);
+        const response = await chai.request(app).get('/teams/99');
+        expect(response.body).to.be.deep.equal(null);
+      });
 });
