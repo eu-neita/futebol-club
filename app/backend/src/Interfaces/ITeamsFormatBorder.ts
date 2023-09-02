@@ -7,6 +7,8 @@ type ILeaderBoardFormat = {
   totalLosses: number;
   goalsFavor: number;
   goalsOwn: number;
+  efficiency: string;
+  goalsBalance: number;
 };
 
 export default ILeaderBoardFormat;
